@@ -1,0 +1,24 @@
+{
+  "name": "feature",
+  "version": "1.0.0",
+  "description": "Feature Drift for Rea\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[Cproject for Research Project\"\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\"Research Project\"",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CunxiangYu/Feature_Drift_RP.git"
+  },
+  "author": "Cunxiang Yu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CunxiangYu/Feature_Drift_RP/issues"
+  },
+  "homepage": "https://github.com/CunxiangYu/Feature_Drift_RP#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "pug": "^2.0.0-rc.3"
+  }
+}
