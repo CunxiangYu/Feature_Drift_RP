@@ -1,0 +1,13 @@
+.container {
+  padding-top: 3rem;
+}
+
+#indexCategoryDiv {
+  display: none;
+}
+
+#index-form h3,
+#indexCategory,
+#indexBtn {
+  text-align: center;
+}

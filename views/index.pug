@@ -1,6 +1,23 @@
-doctype html
-html(lang='en')
-  head
-    title Feature Drift
-  body
-    h1 TO DO
+extends layout.pug
+
+block content
+  div.container
+    div.row
+      form(id='index-form' class='col s8 offset-s2' action='selectCategory' method='POST')
+        div.row
+          h3.col.s12 Select reference product
+        div.row
+          div.input-field.col.s8.offset-s2
+            select(name='referenceProduct')
+              option(value='' disabled selected) Choose your product
+              option(value='mobile phones-s3') Mobile Phone - Samsung Galaxy S3 
+            label Reference product
+        div#indexCategoryDiv
+          div.row
+            h3.col.s12 Category of your product
+            span#indexCategory.col.s8.offset-s2 
+          div#indexBtn.row
+            button(class='btn waves-effect waves-light' type='submit') Next
+              i(class='material-icons right') send
+  include scripts.pug
+  script(type='text/javascript' src='/js/index.js')
