@@ -1,9 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const mongoose = require('mongoose');
+const dbSetting = require('./dbCredentials');
 
 // Init app
 const app = express();
+
+// Connect to db
+mongoose.connect(dbSetting.db);
 
 // Set static assets containing client side css and js files
 app.use(express.static(__dirname + '/public'));
@@ -15,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Set view engine to pug, pug files implicitly stored in 'views'
 app.set('view engine', 'pug');
 
-// Index route
+// Index route (Step 1)
 app.get('/', (req, res) => {
   res.render('index');
 });
@@ -43,6 +48,11 @@ app.post('/rpCategory', (req, res) => {
       }
     });
   });
+});
+
+// Select category route (Step 2)
+app.post('/selectCategory', (req, res) => {
+  res.render('selectCategory');
 });
 
 // Set port
