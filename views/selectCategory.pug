@@ -1,10 +1,15 @@
 extends header.pug
 
 block content
-  div
+  div.container
     h1 selectCategory page
-  
-  
+    form(action='selectProduct' method='POST')
+      each val in categories
+        p
+          input(type='checkbox' class='filled-in' name='categories' id=val value=val) 
+          label(for=val)= val
+      button(class='btn waves-effect waves-light' type='submit') Next
+        i(class='material-icons right') send
   
   include scripts.pug
   script(type='text/javascript' src='/js/selectCategory.js')

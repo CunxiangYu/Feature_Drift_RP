@@ -8,7 +8,7 @@ const dbSetting = require('./dbCredentials');
 const app = express();
 
 // Connect to db
-mongoose.connect(dbSetting.db);
+mongoose.connect(dbSetting.db, { useMongoClient: true });
 
 // Set static assets containing client side css and js files
 app.use(express.static(__dirname + '/public'));
@@ -43,7 +43,7 @@ app.post('/rpCategory', (req, res) => {
       // If match
       if(line.match(re) !== null) {
         // Store top level category into 'category' variable
-        category = line.match(/^(.+?)>/)[1]; // [1] because we only need the one captured by ()
+        category = line.match(/^(.+?)>/)[1].trim(); // [1] because we only need the one captured by ()
         res.json({category: category}); // respond a json format category data to client
       }
     });
@@ -52,11 +52,24 @@ app.post('/rpCategory', (req, res) => {
 
 // Select category route (Step 2)
 app.post('/selectCategory', (req, res) => {
-  res.render('selectCategory');
+  res.render('selectCategory', {
+    categories: [
+      'aaa',
+      'bbb',
+      'ccc'
+    ]
+  });
+});
+
+
+// Select products route (Step 3)
+app.post('/selectProduct', (req, res) => {
+  const categories = req.body.categories;
+  console.log(categories);
 });
 
 // Set port
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 8080);
 const port = app.get('port');
 
 // Start server
