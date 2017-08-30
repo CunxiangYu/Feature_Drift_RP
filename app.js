@@ -4,6 +4,9 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 const dbSetting = require('./dbCredentials');
 
+// Global variable holding the type and model of RP (development)
+let type, model;
+
 // Init app
 const app = express();
 
@@ -29,8 +32,8 @@ app.get('/', (req, res) => {
 app.post('/rpCategory', (req, res) => {
   // Get product type and model from request
   let {referenceProduct} = req.body;
-  const type = referenceProduct.split('-')[0];
-  const model = referenceProduct.split('-')[1];
+  type = referenceProduct.split('-')[0];
+  model = referenceProduct.split('-')[1];
 
   // Open taxonomy file
   fs.readFile('./taxonomy.txt', 'utf8', (err, data) => {
@@ -50,22 +53,63 @@ app.post('/rpCategory', (req, res) => {
   });
 });
 
+// Category collection
+const Category = require('./models/category');
+
 // Select category route (Step 2)
 app.post('/selectCategory', (req, res) => {
-  res.render('selectCategory', {
-    categories: [
-      'aaa',
-      'bbb',
-      'ccc'
-    ]
+  Category.find({}, 'top', (err, categories) => {
+    if (err) return console.error(err);
+    let categoryData = categories.map((category) => {
+      return category.top;
+    });
+    res.render('selectCategory', {
+      categories: categoryData
+    });
   });
 });
 
+const Product = require('./models/product');
 
 // Select products route (Step 3)
 app.post('/selectProduct', (req, res) => {
-  const categories = req.body.categories;
-  console.log(categories);
+  let categoryFromUser;
+
+  if (typeof req.body.categories === 'string') {
+    categoryFromUser = [req.body.categories];
+  } else {
+    categoryFromUser = req.body.categories;
+  }
+
+
+  Category.find({ 'top': { $in: categoryFromUser } }, (err, categories) => {
+    // View model for retrieving and formatting category data
+    let categoryData = categories.map((category) => {
+      // Top level
+      let element = {
+        text: category.top,
+        nodes: []
+      };
+      //Level 2
+      element.nodes = category.subLevels.map((subLevel) => {
+        let sub = {
+          text: subLevel.second,
+          nodes: []
+        };
+        // Level 3
+        sub.nodes = subLevel.third.map((third) => {
+          return {
+            text: third
+          };
+        }); // Level 3 End
+
+        return sub;
+      }); // Level 2 End
+
+      return element;
+    }); // Top level End
+
+  }); // Category Query End
 });
 
 // Set port

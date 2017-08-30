@@ -1,7 +1,7 @@
 // Collection for mapping level 3 categories to their product specifications
 const mongoose = require('mongoose');
 
-const productScheme = mongoose.Scheme({
+const productSchema = mongoose.Schema({
   third: String,
   product: [{
     model: String,
@@ -9,5 +9,5 @@ const productScheme = mongoose.Scheme({
   }]
 });
 
-const Product = mongoose.model('Product', productScheme);
+const Product = mongoose.model('Product', productSchema);
 module.exports = Product;

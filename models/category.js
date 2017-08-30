@@ -1,7 +1,7 @@
 // Collection for mapping first 3 level categories
 const mongoose = require('mongoose');
 
-const categoryScheme = mongoose.Scheme({
+const categorySchema = mongoose.Schema({
   top: String,
   subLevels: [{
     second : String,
@@ -11,5 +11,5 @@ const categoryScheme = mongoose.Scheme({
   }]
 });
 
-const Category = mongoose.model('Category', categoryScheme);
+const Category = mongoose.model('Category', categorySchema);
 module.exports = Category;
