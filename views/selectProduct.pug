@@ -1,9 +1,14 @@
-extends categoryTreeViewHeader.pug
+extends bootstrapHeader.pug
 
 block content
-  div#tree
-    
+  div.container
+    h2 Category Tree View
+    div#tree
+    button(class='btn waves-effect waves-light' type='submit') Next
+      i(class='material-icons right') send
   include scripts.pug
+  script.
+    var treeData = !{data};
   script(type='text/javascript' src='/js/bootstrap-treeview.js')
   script(type='text/javascript' src='/js/selectProduct.js')
   

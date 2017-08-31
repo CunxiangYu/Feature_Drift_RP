@@ -8,8 +8,14 @@ new Category({
     {
       second: 'Pet Supplies',
       third: [
-        'Pet Biometric Moniters',
-        'Pet ID Tags'
+        {
+          name: 'Pet Biometric Moniters',
+          num: 0
+        },
+        {
+          name: 'Pet ID Tags',
+          num: 0
+        }
       ]
     }
   ]
@@ -21,9 +27,14 @@ new Category({
     {
       second: 'Clothing',
       third: [
-        'Activewear',
-        'Outerwear',
-        'Pants'
+        {
+          name: 'Activewear',
+          num: 0
+        },
+        {
+          name: 'Outerwear',
+          num: 0
+        }
       ]
     }
   ]
@@ -35,7 +46,10 @@ new Category({
     {
       second: 'Hobbies & Creative Arts',
       third: [
-        'Musical Instruments'
+        {
+          name: 'Musical Instruments',
+          num: 0
+        }
       ]
     }
   ]
@@ -47,7 +61,10 @@ new Category({
     {
       second: 'Baby Transport',
       third: [
-        'Baby Carriers'
+        {
+          name: 'Baby Carriers',
+          num: 0
+        }
       ]
     }
   ]
@@ -59,7 +76,10 @@ new Category({
     {
       second: 'Construction',
       third: [
-        'Traffic Cones & Barrels'
+        {
+          name: 'Traffic Cones & Barrels',
+          num: 0
+        }
       ]
     }
   ]
@@ -71,8 +91,14 @@ new Category({
     {
       second: 'Food Items',
       third: [
-        'Bakery',
-        'Candy & Chocolate'
+        {
+          name: 'Bakery',
+          num: 0
+        },
+        {
+          name: 'Candy & Chocolate',
+          num: 0
+        }
       ]
     }
   ]
@@ -84,8 +110,14 @@ new Category({
     {
       second: 'Chairs',
       third: [
-        'Bean Bag Chairs',
-        'Floor Chairs'
+        {
+          name: 'Bean Bag Chairs',
+          num: 0
+        },
+        {
+          name: 'Floor Chairs',
+          num: 0
+        }
       ]
     }
   ]
@@ -97,7 +129,10 @@ new Category({
     {
       second: 'Building Materials',
       third: [
-        'Door Hardware'
+        {
+          name: 'Door Hardware',
+          num: 0
+        }
       ]
     }
   ]
@@ -109,7 +144,10 @@ new Category({
     {
       second: 'Health Care',
       third: [
-        'Medicine & Drugs'
+        {
+          name: 'Medicine & Drugs',
+          num: 0
+        }
       ]
     }
   ]
@@ -121,7 +159,10 @@ new Category({
     {
       second: 'Decor',
       third: [
-        'Artwork'
+        {
+          name: 'Artwork',
+          num: 0
+        }
       ]
     }
   ]
@@ -133,7 +174,10 @@ new Category({
     {
       second: 'Weapons',
       third: [
-        'Guns'
+        {
+          name: 'Guns',
+          num: 0
+        }
       ]
     }
   ]
@@ -145,7 +189,10 @@ new Category({
     {
       second: 'Product Manuals',
       third: [
-        'Office Supply Manuals'
+        {
+          name: 'Office Supply Manuals',
+          num: 0
+        }
       ]
     }
   ]
@@ -157,7 +204,10 @@ new Category({
     {
       second: 'General Office Supplies',
       third: [
-        'Erasers'
+        {
+          name: 'Erasers',
+          num: 0
+        }
       ]
     }
   ]
@@ -169,7 +219,10 @@ new Category({
     {
       second: 'Wedding Ceremony Supplies',
       third: [
-        'Aisle Runners'
+        {
+          name: 'Aisle Runners',
+          num: 0
+        }
       ]
     }
   ]
@@ -181,7 +234,10 @@ new Category({
     {
       second: 'Computer Software',
       third: [
-        'Network Software'
+        {
+          name: 'Network Software',
+          num: 0
+        }
       ]
     }
   ]
@@ -193,8 +249,14 @@ new Category({
     {
       second: 'Athletics',
       third: [
-        'Cricket',
-        'Dancing'
+        {
+          name: 'Cricket',
+          num: 0
+        },
+        {
+          name: 'Dancing',
+          num: 0
+        }
       ]
     }
   ]
@@ -206,7 +268,10 @@ new Category({
     {
       second: 'Toys',
       third: [
-        'Educational Toys'
+        {
+          name: 'Educational Toys',
+          num: 0
+        }
       ]
     }
   ]
@@ -218,7 +283,10 @@ new Category({
     {
       second: 'Vehicles',
       third: [
-        'Motor Vehicles'
+        {
+          name: 'Motor Vehicles',
+          num: 0
+        }
       ]
     }
   ]
@@ -230,35 +298,92 @@ new Category({
     {
       second: 'Cameras',
       third: [
-        'Borescopes',
-        'Digital Cameras',
-        'Disposable Cameras',
-        'Film Cameras',
-        'Surveillance Cameras',
-        'Trail Cameras',
-        'Video Cameras',
-        'Webcams'
+        {
+          name: 'Borescopes',
+          num: 0
+        },
+        {
+          name: 'Digital Cameras',
+          num: 0
+        },
+        {
+          name: 'Disposable Cameras',
+          num: 0
+        },
+        {
+          name: 'Film Cameras',
+          num: 0
+        },
+        {
+          name: 'Surveillance Cameras',
+          num: 0
+        },
+        {
+          name: 'Trail Cameras',
+          num: 0
+        },
+        {
+          name: 'Video Cameras',
+          num: 0
+        },
+        {
+          name: 'Webcams',
+          num: 0
+        }
       ]
     },
     {
       second: 'Optics',
       third: [
-        'Binoculars',
-        'Monoculars',
-        'Rangefinders',
-        'Scopes'
+        {
+          name: 'Binoculars',
+          num: 0
+        },
+        {
+          name: 'Monoculars',
+          num: 0
+        },
+        {
+          name: 'Rangefinders',
+          num: 0
+        },
+        {
+          name: 'Scopes',
+          num: 0
+        }
       ]
     },
     {
       second: 'Camera & Optic Accessories',
       third: [
-        'Camera & Optic Replacement Cables',
-        'Camera & Video Camera Lenses',
-        'Camera Lens Accessories',
-        'Camera Parts & Accessories',
-        'Optic Accessories',
-        'Tripod & Monopod Accessories',
-        'Tripods & Monopods'
+        {
+          name: 'Camera & Optic Replacement Cables',
+          num: 0
+        },
+        {
+          name: 'Camera & Video Camera Lenses',
+          num: 0
+        },
+        {
+          name: 'Camera Lens Accessories',
+          num: 0
+        },
+        {
+          name: 'Camera Parts & Accessories',
+          num: 0
+        },
+        {
+          name: 'Optic Accessories',
+          num: 0
+        },
+        {
+          name: 'Tripod & Monopod Accessories',
+          num: 0
+        },
+        {
+          name: 'Tripods & Monopods',
+          num: 0
+        }
       ]
     },
   ]
@@ -270,61 +395,151 @@ new Category({
     {
       second: 'Arcade Equipment',
       third: [
-        'Basketball Arcade Games',
-        'Pinball Machine Accessories',
-        'Pinball Machine',
-        'Skee-Ball Machines',
-        'Video Game Arcade Cabinet Accessories',
-        'Video Game Arcade Cabinets'
+        {
+          name: 'Basketball Arcade Games',
+          num: 0
+        },
+        {
+          name: 'Pinball Machine Accessories',
+          num: 0
+        },
+        {
+          name: 'Pinball Machine',
+          num: 0
+        },
+        {
+          name: 'Skee-Ball Machines',
+          num: 0
+        },
+        {
+          name: 'Video Game Arcade Cabinet Accessories',
+          num: 0
+        },
+        {
+          name: 'Video Game Arcade Cabinets',
+          num: 0
+        }
       ]
     },
     {
       second: 'Audio',
       third: [
-        'Audio Accessories',
-        'Audio Components',
-        'Audio Players & Recorders'
+        {
+          name: 'Audio Accessories',
+          num: 0
+        },
+        {
+          name: 'Audio Components',
+          num: 0
+        },
+        {
+          name: 'Audio Players & Recorders',
+          num: 0
+        }
       ]
     },
     {
       second: 'Communications',
       third: [
-        'Answering Machines',
-        'Caller IDs',
-        'Communication Radio Accessories',
-        'Communication Radios',
-        'Telephony'
+        {
+          name: 'Answering Machines',
+          num: 0
+        },
+        {
+          name: 'Caller IDs',
+          num: 0
+        },
+        {
+          name: 'Communication Radio Accessories',
+          num: 0
+        },
+        {
+          name: 'Communication Radios',
+          num: 0
+        },
+        {
+          name: 'Telephony',
+          num: 0
+        }
       ]
     },
     {
       second: 'Computers',
       third: [
-        'Barebone Computers',
-        'Computer Servers',
-        'Desktop Computers',
-        'Handheld Devices',
-        'Interactive Kiosks',
-        'Laptops',
-        'Smart Glasses',
-        'Tablet Computers',
-        'Touch Table Computers'
+        {
+          name: 'Barebone Computers',
+          num: 0
+        },
+        {
+          name: 'Computer Servers',
+          num: 0
+        },
+        {
+          name: 'Desktop Computers',
+          num: 0
+        },
+        {
+          name: 'Handheld Devices',
+          num: 0
+        },
+        {
+          name: 'Interactive Kiosks',
+          num: 0
+        },
+        {
+          name: 'Laptops',
+          num: 0
+        },
+        {
+          name: 'Smart Glasses',
+          num: 0
+        },
+        {
+          name: 'Tablet Computers',
+          num: 0
+        },
+        {
+          name: 'Touch Table Computers',
+          num: 0
+        }
       ]
     },
     {
       second: 'Print, Copy, Scan & Fax',
       third: [
-        '3D Printers',
-        'Printers, Copiers & Fax Machines'
-        'Scanners'
+        {
+          name: '3D Printers',
+          num: 0
+        },
+        {
+          name: 'Printers, Copiers & Fax Machines',
+          num: 0
+        },
+        {
+          name: 'Scanners',
+          num: 0
+        }
       ]
     },
     {
       second: 'Video',
       third: [
-        'Computer Moniters',
-        'Projectors',
-        'Video Players & Recorders',
-        'Video Servers'
+        {
+          name: 'Computer Moniters',
+          num: 0
+        },
+        {
+          name: 'Projectors',
+          num: 0
+        },
+        {
+          name: 'Video Players & Recorders',
+          num: 0
+        },
+        {
+          name: 'Video Servers',
+          num: 0
+        }
       ]
     },
   ]

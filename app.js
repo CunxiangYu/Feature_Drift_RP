@@ -81,26 +81,44 @@ app.post('/selectProduct', (req, res) => {
     categoryFromUser = req.body.categories;
   }
 
-
   Category.find({ 'top': { $in: categoryFromUser } }, (err, categories) => {
-    // View model for retrieving and formatting category data
+    // Tree View model for retrieving and formatting category data
     let categoryData = categories.map((category) => {
       // Top level
       let element = {
         text: category.top,
+        hideCheckbox: true,
+        selectable: false,
+        state: {
+          expanded: true
+        },
+        color: '#fff',
+        backColor: '#5fcf80',
         nodes: []
       };
       //Level 2
       element.nodes = category.subLevels.map((subLevel) => {
         let sub = {
           text: subLevel.second,
+          hideCheckbox: true,
+          selectable: false,
+          state: {
+            expanded: false
+          },
           nodes: []
         };
         // Level 3
         sub.nodes = subLevel.third.map((third) => {
+          let num = "" + third.num;
           return {
-            text: third
+            text: third.name,
+            selectable: false,
+            tags: [
+              'available',
+              num
+            ]
           };
+
         }); // Level 3 End
 
         return sub;
@@ -109,11 +127,26 @@ app.post('/selectProduct', (req, res) => {
       return element;
     }); // Top level End
 
+    // Render selectProduct page
+    res.render('selectProduct', {
+      data: JSON.stringify(categoryData) // Convert to string for pug file to successfully receive
+    });
   }); // Category Query End
+
 });
 
+// Select model route (Step 4)
+app.post('/selectModel', (req, res) => {
+  // TO DO
+});
+
+
+
+
+
+
 // Set port
-app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.PORT || 8000);
 const port = app.get('port');
 
 // Start server

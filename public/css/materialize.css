@@ -3305,7 +3305,7 @@ input[type=range] + .thumb {
 .no-padding {
   padding: 0 !important;
 }
-
+/*
 span.badge {
   min-width: 3rem;
   padding: 0 6px;
@@ -3354,7 +3354,7 @@ nav ul a span.badge {
 
 .side-nav span.badge {
   margin-top: calc(24px - 11px);
-}
+}*/
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
 .material-icons {

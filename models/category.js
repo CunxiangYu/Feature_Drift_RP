@@ -6,7 +6,8 @@ const categorySchema = mongoose.Schema({
   subLevels: [{
     second : String,
     third: [{
-      type: String
+      name: String,
+      num: Number
     }]
   }]
 });
