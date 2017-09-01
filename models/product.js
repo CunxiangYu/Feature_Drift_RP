@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const productSchema = mongoose.Schema({
   third: String,
-  product: [{
+  models: [{
     model: String,
     specification: String
   }]

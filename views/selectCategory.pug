@@ -2,7 +2,8 @@ extends header.pug
 
 block content
   div.container
-    h3 selectCategory page
+    h3 Select Category
+    br
     form(action='selectProduct' method='POST')
       each val in categories
         p
@@ -10,6 +11,7 @@ block content
           label(for=val)= val
       button(class='btn waves-effect waves-light' type='submit') Next
         i(class='material-icons right') send
-  
+      br
+      br
   include scripts.pug
   script(type='text/javascript' src='/js/selectCategory.js')

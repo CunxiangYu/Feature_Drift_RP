@@ -53,7 +53,7 @@ app.post('/rpCategory', (req, res) => {
   });
 });
 
-// Category collection
+// Import Category collection
 const Category = require('./models/category');
 
 // Select category route (Step 2)
@@ -68,8 +68,6 @@ app.post('/selectCategory', (req, res) => {
     });
   });
 });
-
-const Product = require('./models/product');
 
 // Select products route (Step 3)
 app.post('/selectProduct', (req, res) => {
@@ -135,9 +133,41 @@ app.post('/selectProduct', (req, res) => {
 
 });
 
+// Import Product collection
+const Product = require('./models/product');
+
 // Select model route (Step 4)
 app.post('/selectModel', (req, res) => {
+  // Products array
+  let { products } = req.body;
+  products = JSON.parse(products);
+
+  Product.find({ third: { $in: products } }, (err, docs) => {
+    let modelData = docs.map((product) => {
+      let productName = product.third; // Third level of category tree (which is product)
+
+      let modelNamesArray = product.models.map((model) => {
+        return model.model;
+      }); // Array of string type
+
+      return {
+        productName: productName,
+        models: modelNamesArray
+      };
+    });
+
+    res.json({ data: modelData });
+  });
+});
+
+// Word Cloud (Step 5)
+app.post('/wordCloud', (req, res) => {
+  // Array containing user selected models for generating word cloud
+  let { selectedModels } = req.body;
+
   // TO DO
+
+
 });
 
 
@@ -145,8 +175,9 @@ app.post('/selectModel', (req, res) => {
 
 
 
+
 // Set port
-app.set('port', process.env.PORT || 8000);
+app.set('port', process.env.PORT || 3000);
 const port = app.get('port');
 
 // Start server

@@ -27,6 +27,39 @@ $(document).ready(function() {
   });
 
   $('.btn').on('click', function(e) {
-    // TO DO
+    let products = JSON.stringify(productArr);
+    let data = {
+      products: products
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: 'selectModel',
+      data: data,
+      dataType: 'json',
+      success: function(res) {
+        $('#categoryTree').hide();
+
+        var formHTML = '';
+        res.data.forEach(function(product) {
+          formHTML += '<div class="form-group">';
+          formHTML += '<label>' + product.productName + '</label>';
+          formHTML += '<select class="form-control custom-select" ';
+          formHTML += 'name="selectedModels">';
+
+          product.models.forEach(function(model) {
+            formHTML += '<option value="' + model +'">' + model + '</option>';
+          });
+
+          formHTML += '</select></div>';
+        });
+
+        formHTML += '<button class="btn waves-effect waves-light" type="submit">';
+        formHTML += 'Word Cloud <i class="material-icons right">send</i></button>';
+
+        $('#modelForm').html(formHTML);
+        $('div#model').show();
+      }
+    });
   });
 });

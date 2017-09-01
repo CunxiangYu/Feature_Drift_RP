@@ -1,5 +1,5 @@
 /**
-  These are the visual reminder of category data stored in DB
+  These are the visual reminder of category data stored in Category collection
 **/
 
 new Category({

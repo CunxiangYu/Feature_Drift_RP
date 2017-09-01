@@ -11,3 +11,7 @@
 #indexBtn {
   text-align: center;
 }
+
+div#model {
+  display: none;
+}
