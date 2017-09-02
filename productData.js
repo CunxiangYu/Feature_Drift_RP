@@ -4,7 +4,7 @@
 
 new Product({
   third: 'Digital Cameras',
-  product: [
+  models: [
     {
     model: 'Samsung NX3000',
     specification: 'Samsung NX3000 specs here'
@@ -18,7 +18,7 @@ new Product({
 
 new Product({
   third: 'Telephony',
-  product: [
+  models: [
     {
       model: 'Samsung S3',
       specification: 'Samsung S3 specs here'
@@ -28,7 +28,7 @@ new Product({
 
 new Product({
   third: 'Printers, Copiers & Fax Machines',
-  product: [
+  models: [
     {
       model: 'HP Officejet Pro X576dw Multifunction',
       specification: 'HP Officejet Pro X576dw Multifunction specs here'
