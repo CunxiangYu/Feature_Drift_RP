@@ -6,19 +6,11 @@ block content
       h2 Category Tree View
       div#tree
       br
-      button(class='btn waves-effect waves-light' type='submit') Show Model
+      button(id='treeBtn' class='btn waves-effect waves-light' type='submit') Show Model
         i(class='material-icons right') send
     div#model
       h2 Select Model
       form(id='modelForm' action='wordCloud' method='POST')
-        div.form-group
-          label Product
-          select.form-control.custom-select
-            option one
-            option two
-            option three
-        button(class='btn waves-effect waves-light' type='submit') Word Cloud
-          i(class='material-icons right') send
     hr
       
   include scripts.pug

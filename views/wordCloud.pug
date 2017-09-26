@@ -1,0 +1,26 @@
+extends header.pug
+
+block content
+  div.container
+    h2 Word Cloud
+    div#wordCloud
+    div#wordCloudFinal
+    
+    hr
+    h3 Filter non-feature words here
+    div.row 
+      form(class='col s12' action='setSimilarityRange' method='POST')
+        div.row 
+          div.input-field.col.s12
+            textarea(id='nonFeatureWords' name='userInputWords' class='materialize-textarea')
+            label(for='nonFeatureWords') Input Box
+        button(class='btn waves-effect waves-light' type='submit') Next
+          i(class='material-icons right') send
+        
+  include scripts.pug
+  script.
+    var wordCloudData = !{data};
+  script(type='text/javascript' src='/js/d3.js')
+  script(type='text/javascript' src='/js/d3.layout.cloud.js')
+  script(type='text/javascript' src='/js/jquery-ui-1.12.1/jquery-ui.min.js')
+  script(type='text/javascript' src='/js/wordCloud.js')

@@ -26,7 +26,7 @@ $(document).ready(function() {
     });
   });
 
-  $('.btn').on('click', function(e) {
+  $('#treeBtn').on('click', function(e) {
     let products = JSON.stringify(productArr);
     let data = {
       products: products
@@ -40,6 +40,7 @@ $(document).ready(function() {
       success: function(res) {
         $('#categoryTree').hide();
 
+        // Could use ES6 template string ` ` instead
         var formHTML = '';
         res.data.forEach(function(product) {
           formHTML += '<div class="form-group">';

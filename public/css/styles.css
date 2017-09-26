@@ -15,3 +15,12 @@
 div#model {
   display: none;
 }
+
+div#wordCloudFinal {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+div.wordCloud {
+  min-width: 50%;
+}

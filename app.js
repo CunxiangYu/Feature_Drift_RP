@@ -3,9 +3,13 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const mongoose = require('mongoose');
 const dbSetting = require('./dbCredentials');
+const sw = require('stopword'); // Node module for removing stopwords
+const removeDuplicateWord = require('./lib/removeDuplicateWord');
 
 // Global variable holding the type and model of RP (development)
-let type, model;
+let rpType, rpModel;
+// Array contains model name and spec words array of all user selected models
+let allModelsArray = [];
 
 // Init app
 const app = express();
@@ -23,6 +27,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Set view engine to pug, pug files implicitly stored in 'views'
 app.set('view engine', 'pug');
 
+// Import Category collection
+const Category = require('./models/category');
+
+// Import Product collection
+const Product = require('./models/product');
+
+// Import Specification collection
+const Specification = require('./models/specification');
+
 // Index route (Step 1)
 app.get('/', (req, res) => {
   res.render('index');
@@ -32,14 +45,29 @@ app.get('/', (req, res) => {
 app.post('/rpCategory', (req, res) => {
   // Get product type and model from request
   let {referenceProduct} = req.body;
-  type = referenceProduct.split('-')[0];
-  model = referenceProduct.split('-')[1];
+  rpType = referenceProduct.split('-')[0];
+  rpModel = referenceProduct.split('-')[1];
+
+  Specification.findOne({ 'model': rpModel }, (err, model) => {
+    let wordsArray = model.specification.split(' ');
+    // Remove duplicate words
+    wordsArray = removeDuplicateWord(wordsArray);
+    // Remove stop words
+    const featureWordsArray = sw.removeStopwords(wordsArray);
+
+    let modelAndSpec = {
+     modelName: model.model,
+     specArray: featureWordsArray.slice(0, 50)
+    };
+
+    allModelsArray.push(modelAndSpec);
+  });
 
   // Open taxonomy file
   fs.readFile('./taxonomy.txt', 'utf8', (err, data) => {
     if (err) throw err;
     const taxonomyFileArray = data.split(/\n/); // Split all lines of the file into array
-    const re = new RegExp(type + '$', 'i'); // Create a product type RegExp to match
+    const re = new RegExp(rpType + '$', 'i'); // Create a product type RegExp to match
     let category = null;
     // Match each line
     taxonomyFileArray.forEach((line) => {
@@ -52,9 +80,6 @@ app.post('/rpCategory', (req, res) => {
     });
   });
 });
-
-// Import Category collection
-const Category = require('./models/category');
 
 // Select category route (Step 2)
 app.post('/selectCategory', (req, res) => {
@@ -133,9 +158,6 @@ app.post('/selectProduct', (req, res) => {
 
 });
 
-// Import Product collection
-const Product = require('./models/product');
-
 // Select model route (Step 4)
 app.post('/selectModel', (req, res) => {
   // Products array
@@ -147,7 +169,7 @@ app.post('/selectModel', (req, res) => {
       let productName = product.third; // Third level of category tree (which is product)
 
       let modelNamesArray = product.models.map((model) => {
-        return model.model;
+        return model;
       }); // Array of string type
 
       return {
@@ -163,12 +185,51 @@ app.post('/selectModel', (req, res) => {
 // Word Cloud (Step 5)
 app.post('/wordCloud', (req, res) => {
   // Array containing user selected models for generating word cloud
-  let { selectedModels } = req.body;
+  let selectedModels;
+  if (typeof req.body.selectedModels === 'string') {
+    selectedModels = [req.body.selectedModels];
+  } else {
+    selectedModels = req.body.selectedModels;
+  }
 
-  // TO DO
+  // Find specs data of each model in DB
+  Specification.find({ model: {$in: selectedModels} }, (err, models) => {
+    models.map((model) => {
+      let wordsArray = model.specification.split(' ');
+      // Remove duplicate words
+      wordsArray = removeDuplicateWord(wordsArray);
+      // Remove stop words
+      const featureWordsArray = sw.removeStopwords(wordsArray);
 
+      // Each individual model data in object format
+      let modelAndSpec = {
+       modelName: model.model,
+       specArray: featureWordsArray.slice(0, 50)
+      };
+      allModelsArray.push(modelAndSpec);
+    });
+
+    res.render('wordCloud', {
+      data: JSON.stringify(allModelsArray) // Convert to string for pug file to successfully receive
+    });
+  });
 
 });
+
+
+// Ask user to set the similarity range (Step 6)
+app.post('/setSimilarityRange', (req, res) => {
+  // User input non-feature words for filtering in string format
+  let { userInputWords } = req.body;
+  console.log(typeof userInput);
+});
+
+
+
+
+
+
+
 
 
 
