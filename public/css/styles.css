@@ -7,7 +7,7 @@
 }
 
 #index-form h3,
-#indexCategory,
+span#indexCategory,
 #indexBtn {
   text-align: center;
 }

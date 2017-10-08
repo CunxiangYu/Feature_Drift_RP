@@ -1,0 +1,20 @@
+extends header.pug
+
+block content
+  div.container
+    h3 Set Similarity Range
+    br
+    div.row 
+      form(class='col s12' action='interestedProduct' method='POST')
+        div.row 
+          div.input-field.col.s6
+            input(name="min" type='text')
+            label(for='min') Min:
+          div.input-field.col.s6
+            input(name="max" type='text')
+            label(for='max') Max:
+        button(class='btn waves-effect waves-light' type='submit') Next
+          i(class='material-icons right') send
+  
+  
+  include scripts.pug

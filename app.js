@@ -10,6 +10,14 @@ const removeDuplicateWord = require('./lib/removeDuplicateWord');
 let rpType, rpModel;
 // Array contains model name and spec words array of all user selected models
 let allModelsArray = [];
+// RP model
+let rpAndSpec;
+// otherModels
+let otherModelsAndSpec;
+// maxLength of each spec Array
+let maxLength = 0;
+// Related products Array
+let relatedProducts = [];
 
 // Init app
 const app = express();
@@ -59,7 +67,6 @@ app.post('/rpCategory', (req, res) => {
      modelName: model.model,
      specArray: featureWordsArray.slice(0, 50)
     };
-
     allModelsArray.push(modelAndSpec);
   });
 
@@ -221,7 +228,90 @@ app.post('/wordCloud', (req, res) => {
 app.post('/setSimilarityRange', (req, res) => {
   // User input non-feature words for filtering in string format
   let { userInputWords } = req.body;
-  console.log(typeof userInput);
+  // Convert it to array
+  userInputWords = userInputWords.split(' ').map(word => {
+    return word.toLowerCase();
+  });
+  // Filter userInputWords
+  allModelsArray.forEach((model) => {
+    model.specArray = model.specArray.filter((word) => {
+        if (userInputWords.indexOf(word.toLowerCase()) === -1) {
+          return true;
+        } else {
+          return false;
+        }
+    });
+  });
+  // Find the max length of specArray
+  allModelsArray.forEach((model) => {
+    if (model.specArray.length > maxLength) {
+      maxLength = model.specArray.length
+    }
+    model.specArray = model.specArray.map((word) => {
+      return word.toLowerCase();
+    });
+  });
+
+  // Fill up to maxLength with 'null'
+  allModelsArray.forEach((model) => {
+    if (model.specArray.length < maxLength) {
+      let nullCount = maxLength - model.specArray.length;
+      for (let i = 0; i < nullCount; i++) {
+        model.specArray.push(null);
+      }
+    }
+  });
+  // Sepatate other models from RP model
+  rpAndSpec = allModelsArray[0];
+  otherModelsAndSpec = allModelsArray.slice(1);
+
+  // Render a form asking for similarity range
+  res.render('similarityRange');
+});
+
+
+// Ask user to choose his interested product (Step 7)
+app.post('/interestedProduct', (req, res) => {
+  // Similarity range
+  let min = parseFloat(req.body.min);
+  let max = parseFloat(req.body.max);
+  // Calculate similarity
+  otherModelsAndSpec.forEach((model) => {
+    let sameWordCount = 0;
+    model.specArray.map((word) => {
+      if (rpAndSpec.specArray.indexOf(word) !== -1) {
+        sameWordCount++;
+      }
+    });
+
+    let valueOfSimilarity = sameWordCount / (Math.sqrt(rpAndSpec.specArray.length) * Math.sqrt(sameWordCount));
+
+    valueOfSimilarity = parseFloat(valueOfSimilarity.toFixed(1));
+    // If in the range, push it to relatedProducts array
+    if (valueOfSimilarity >= min && valueOfSimilarity <= max) {
+      relatedProducts.push(model);
+    }
+  });
+  let relatedProductsData = relatedProducts.map((model) => {
+    return model.modelName;
+  });
+
+  res.render('interestedProduct', {
+    relatedProducts: relatedProductsData
+  });
+
+});
+
+
+// Show Unique Feature (Step 8)
+app.post('/showUniqueFeature', (req, res) => {
+
+  // TO DO
+  if (req.body.interestedProduct) {
+    res.send('TODO');
+  } else {
+    res.send('TODO');
+  }
 });
 
 
@@ -234,11 +324,8 @@ app.post('/setSimilarityRange', (req, res) => {
 
 
 
-
-
-
 // Set port
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 8080);
 const port = app.get('port');
 
 // Start server
