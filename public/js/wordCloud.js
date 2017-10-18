@@ -50,25 +50,9 @@ $(document).ready(function() {
     $('#wordCloudFinal').append($wordCloudDiv);
   }
   $('#wordCloud').hide();
-
-  $('text')
-  .draggable()
-  .bind('mousedown', function(event, ui){
-    $(event.target.parentElement).append( event.target );
-  })
-  .bind('drag', function(event, ui){
-    event.target.setAttribute('x', ui.position.left);
-    event.target.setAttribute('y', ui.position.top);
-  });
-
 });
 
 
-
-
-// Draggable and Droppable
-// Ask a question regarding this on stackOverFlow
-// Write a function to eliminate duplicate word
 
 
 

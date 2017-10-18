@@ -65,7 +65,7 @@ app.post('/rpCategory', (req, res) => {
 
     let modelAndSpec = {
      modelName: model.model,
-     specArray: featureWordsArray.slice(0, 50)
+     specArray: featureWordsArray.slice(0, 70)
     };
     allModelsArray.push(modelAndSpec);
   });
@@ -211,7 +211,7 @@ app.post('/wordCloud', (req, res) => {
       // Each individual model data in object format
       let modelAndSpec = {
        modelName: model.model,
-       specArray: featureWordsArray.slice(0, 50)
+       specArray: featureWordsArray.slice(0, 70)
       };
       allModelsArray.push(modelAndSpec);
     });
@@ -292,26 +292,43 @@ app.post('/interestedProduct', (req, res) => {
       relatedProducts.push(model);
     }
   });
-  let relatedProductsData = relatedProducts.map((model) => {
+  let relatedProductsModelArray = relatedProducts.map((model) => {
     return model.modelName;
   });
 
-  res.render('interestedProduct', {
-    relatedProducts: relatedProductsData
+  Product.find({models: {$elemMatch: {$in: relatedProductsModelArray}}}, (err, products) => {
+    let relatedProductsData = products.map(product => {
+      for (let i = 0; i < product.models.length; i++) {
+        if (relatedProductsModelArray.indexOf(product.models[i]) !== -1) {
+          return {
+            productName: product.third,
+            modelName: product.models[i]
+          };
+        }
+      }
+    });
+    res.render('interestedProduct', {
+      relatedProducts: relatedProductsData
+    });
   });
-
 });
 
 
 // Show Unique Feature (Step 8)
 app.post('/showUniqueFeature', (req, res) => {
+  let uniqueFeatures = [];
+  relatedProducts.forEach(product => {
+    product.specArray.forEach(word => {
+      if (rpAndSpec.specArray.indexOf(word) === -1 &&
+          uniqueFeatures.indexOf(word) === -1) {
+        uniqueFeatures.push(word);
+      }
+    });
+  });
 
-  // TO DO
-  if (req.body.interestedProduct) {
-    res.send('TODO');
-  } else {
-    res.send('TODO');
-  }
+  res.render('uniqueFeatures', {
+    data: JSON.stringify(uniqueFeatures) // Convert to string for pug file to successfully receive
+  });
 });
 
 

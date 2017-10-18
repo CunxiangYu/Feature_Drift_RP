@@ -5,10 +5,11 @@ block content
     h3 Select Category
     br
     form(action='selectProduct' method='POST')
-      each val in categories
-        p
-          input(type='checkbox' class='filled-in' name='categories' id=val value=val) 
-          label(for=val)= val
+      div.row
+        each val in categories
+          p.col.s6
+            input(type='checkbox' class='filled-in' name='categories' id=val value=val) 
+            label(for=val)= val
       button(class='btn waves-effect waves-light' type='submit') Next
         i(class='material-icons right') send
       br

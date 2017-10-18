@@ -1,0 +1,13 @@
+extends header.pug
+
+block content
+  div.container
+    h2 Unique Features
+    div#wordCloud
+  include scripts.pug
+  script.
+    var wordCloudData = !{data};
+  script(type='text/javascript' src='/js/d3.js')
+  script(type='text/javascript' src='/js/d3.layout.cloud.js')
+  script(type='text/javascript' src='/js/jquery-ui-1.12.1/jquery-ui.min.js')
+  script(type='text/javascript' src='/js/uniqueFeatures.js')

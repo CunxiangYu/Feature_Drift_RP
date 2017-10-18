@@ -5,15 +5,12 @@ block content
     h3 Related product(s):
     ul.collection
       each val in relatedProducts
-        li(class="collection-item")= val
+        li(class="collection-item")
+          h5.teal-text.lighten-2= val.productName
+          p= val.modelName
     br
-    h3 Choose your interested product:
     div.row
       form(class='col s12' action='showUniqueFeature' method='POST')
-        div.row 
-          div.input-field.col.s12
-            input(name="interestedProduct" type='text')
-            label(for='interestedProduct') Your Interested Product:
         button(class='btn waves-effect waves-light' type='submit') Next
           i(class='material-icons right') send
   include scripts.pug
