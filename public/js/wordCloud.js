@@ -51,21 +51,3 @@ $(document).ready(function() {
   }
   $('#wordCloud').hide();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Write email to RP supervisor
