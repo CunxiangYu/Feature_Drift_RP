@@ -342,7 +342,7 @@ app.post('/showUniqueFeature', (req, res) => {
 
 
 // Set port
-app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.PORT || 8000);
 const port = app.get('port');
 
 // Start server
