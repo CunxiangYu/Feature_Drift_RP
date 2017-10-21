@@ -2,25 +2,28 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const mongoose = require('mongoose');
+const session = require('express-session');
 const dbSetting = require('./dbCredentials');
 const sw = require('stopword'); // Node module for removing stopwords
 const removeDuplicateWord = require('./lib/removeDuplicateWord');
 
-// Global variable holding the type and model of RP (development)
-let rpType, rpModel;
-// Array contains model name and spec words array of all user selected models
-let allModelsArray = [];
-// RP model
-let rpAndSpec;
-// otherModels
-let otherModelsAndSpec;
-// maxLength of each spec Array
-let maxLength = 0;
-// Related products Array
-let relatedProducts = [];
-
 // Init app
 const app = express();
+
+// Session middleware
+let sess = {
+  secret: 'rp feature',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {}
+};
+
+if (app.get('env') === 'production') {
+  app.set('trust proxy', 1);
+  sess.cookie.secure = true;
+}
+
+app.use(session(sess));
 
 // Connect to db
 mongoose.connect(dbSetting.db, { useMongoClient: true });
@@ -44,8 +47,16 @@ const Product = require('./models/product');
 // Import Specification collection
 const Specification = require('./models/specification');
 
+// Global session variable
+let ssn;
+
 // Index route (Step 1)
 app.get('/', (req, res) => {
+  ssn = req.session;
+  // Set session variables
+  ssn.allModelsArray = [];
+  ssn.maxLength = 0;
+  ssn.relatedProducts = [];
   res.render('index');
 });
 
@@ -53,10 +64,10 @@ app.get('/', (req, res) => {
 app.post('/rpCategory', (req, res) => {
   // Get product type and model from request
   let {referenceProduct} = req.body;
-  rpType = referenceProduct.split('-')[0];
-  rpModel = referenceProduct.split('-')[1];
+  ssn.rpType = referenceProduct.split('-')[0];
+  ssn.rpModel = referenceProduct.split('-')[1];
 
-  Specification.findOne({ 'model': rpModel }, (err, model) => {
+  Specification.findOne({ 'model': ssn.rpModel }, (err, model) => {
     let wordsArray = model.specification.split(' ');
     // Remove duplicate words
     wordsArray = removeDuplicateWord(wordsArray);
@@ -67,14 +78,14 @@ app.post('/rpCategory', (req, res) => {
      modelName: model.model,
      specArray: featureWordsArray.slice(0, 70)
     };
-    allModelsArray.push(modelAndSpec);
+    ssn.allModelsArray.push(modelAndSpec);
   });
 
   // Open taxonomy file
   fs.readFile('./taxonomy.txt', 'utf8', (err, data) => {
     if (err) throw err;
     const taxonomyFileArray = data.split(/\n/); // Split all lines of the file into array
-    const re = new RegExp(rpType + '$', 'i'); // Create a product type RegExp to match
+    const re = new RegExp(ssn.rpType + '$', 'i'); // Create a product type RegExp to match
     let category = null;
     // Match each line
     taxonomyFileArray.forEach((line) => {
@@ -95,6 +106,7 @@ app.post('/selectCategory', (req, res) => {
     let categoryData = categories.map((category) => {
       return category.top;
     });
+
     res.render('selectCategory', {
       categories: categoryData
     });
@@ -213,11 +225,11 @@ app.post('/wordCloud', (req, res) => {
        modelName: model.model,
        specArray: featureWordsArray.slice(0, 70)
       };
-      allModelsArray.push(modelAndSpec);
+      ssn.allModelsArray.push(modelAndSpec);
     });
 
     res.render('wordCloud', {
-      data: JSON.stringify(allModelsArray) // Convert to string for pug file to successfully receive
+      data: JSON.stringify(ssn.allModelsArray) // Convert to string for pug file to successfully receive
     });
   });
 
@@ -233,7 +245,7 @@ app.post('/setSimilarityRange', (req, res) => {
     return word.toLowerCase();
   });
   // Filter userInputWords
-  allModelsArray.forEach((model) => {
+  ssn.allModelsArray.forEach((model) => {
     model.specArray = model.specArray.filter((word) => {
         if (userInputWords.indexOf(word.toLowerCase()) === -1) {
           return true;
@@ -243,9 +255,9 @@ app.post('/setSimilarityRange', (req, res) => {
     });
   });
   // Find the max length of specArray
-  allModelsArray.forEach((model) => {
-    if (model.specArray.length > maxLength) {
-      maxLength = model.specArray.length
+  ssn.allModelsArray.forEach((model) => {
+    if (model.specArray.length > ssn.maxLength) {
+      ssn.maxLength = model.specArray.length
     }
     model.specArray = model.specArray.map((word) => {
       return word.toLowerCase();
@@ -253,17 +265,17 @@ app.post('/setSimilarityRange', (req, res) => {
   });
 
   // Fill up to maxLength with 'null'
-  allModelsArray.forEach((model) => {
-    if (model.specArray.length < maxLength) {
-      let nullCount = maxLength - model.specArray.length;
+  ssn.allModelsArray.forEach((model) => {
+    if (model.specArray.length < ssn.maxLength) {
+      let nullCount = ssn.maxLength - model.specArray.length;
       for (let i = 0; i < nullCount; i++) {
         model.specArray.push(null);
       }
     }
   });
   // Sepatate other models from RP model
-  rpAndSpec = allModelsArray[0];
-  otherModelsAndSpec = allModelsArray.slice(1);
+  ssn.rpAndSpec = ssn.allModelsArray[0];
+  ssn.otherModelsAndSpec = ssn.allModelsArray.slice(1);
 
   // Render a form asking for similarity range
   res.render('similarityRange');
@@ -276,23 +288,23 @@ app.post('/interestedProduct', (req, res) => {
   let min = parseFloat(req.body.min);
   let max = parseFloat(req.body.max);
   // Calculate similarity
-  otherModelsAndSpec.forEach((model) => {
+  ssn.otherModelsAndSpec.forEach((model) => {
     let sameWordCount = 0;
     model.specArray.map((word) => {
-      if (rpAndSpec.specArray.indexOf(word) !== -1) {
+      if (ssn.rpAndSpec.specArray.indexOf(word) !== -1) {
         sameWordCount++;
       }
     });
 
-    let valueOfSimilarity = sameWordCount / (Math.sqrt(rpAndSpec.specArray.length) * Math.sqrt(sameWordCount));
+    let valueOfSimilarity = sameWordCount / (Math.sqrt(ssn.rpAndSpec.specArray.length) * Math.sqrt(sameWordCount));
 
     valueOfSimilarity = parseFloat(valueOfSimilarity.toFixed(1));
     // If in the range, push it to relatedProducts array
     if (valueOfSimilarity >= min && valueOfSimilarity <= max) {
-      relatedProducts.push(model);
+      ssn.relatedProducts.push(model);
     }
   });
-  let relatedProductsModelArray = relatedProducts.map((model) => {
+  let relatedProductsModelArray = ssn.relatedProducts.map((model) => {
     return model.modelName;
   });
 
@@ -317,9 +329,9 @@ app.post('/interestedProduct', (req, res) => {
 // Show Unique Feature (Step 8)
 app.post('/showUniqueFeature', (req, res) => {
   let uniqueFeatures = [];
-  relatedProducts.forEach(product => {
+  ssn.relatedProducts.forEach(product => {
     product.specArray.forEach(word => {
-      if (rpAndSpec.specArray.indexOf(word) === -1 &&
+      if (ssn.rpAndSpec.specArray.indexOf(word) === -1 &&
           uniqueFeatures.indexOf(word) === -1) {
         uniqueFeatures.push(word);
       }
@@ -342,7 +354,7 @@ app.post('/showUniqueFeature', (req, res) => {
 
 
 // Set port
-app.set('port', process.env.PORT || 8000);
+app.set('port', process.env.PORT || 3000);
 const port = app.get('port');
 
 // Start server
