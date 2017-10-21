@@ -6,6 +6,7 @@ const session = require('express-session');
 const dbSetting = require('./dbCredentials');
 const sw = require('stopword'); // Node module for removing stopwords
 const removeDuplicateWord = require('./lib/removeDuplicateWord');
+const tm = require('textmining'); // Node module for sorting words based on frequency
 
 // Init app
 const app = express();
@@ -69,14 +70,23 @@ app.post('/rpCategory', (req, res) => {
 
   Specification.findOne({ 'model': ssn.rpModel }, (err, model) => {
     let wordsArray = model.specification.split(' ');
-    // Remove duplicate words
-    wordsArray = removeDuplicateWord(wordsArray);
-    // Remove stop words
-    const featureWordsArray = sw.removeStopwords(wordsArray);
+    let bag = tm.bagOfWords(wordsArray, true, true);
+    let featureWordsArray = bag.terms.sort(function(a, b) {
+      if (a.frequency > b.frequency) {
+        return -1;
+      } else if (a.frequency < b.frequency) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    featureWordsArray = featureWordsArray.slice(1, 71).map(obj => {
+      return obj.term;
+    });
 
     let modelAndSpec = {
      modelName: model.model,
-     specArray: featureWordsArray.slice(0, 70)
+     specArray: featureWordsArray
     };
     ssn.allModelsArray.push(modelAndSpec);
   });
@@ -215,15 +225,23 @@ app.post('/wordCloud', (req, res) => {
   Specification.find({ model: {$in: selectedModels} }, (err, models) => {
     models.map((model) => {
       let wordsArray = model.specification.split(' ');
-      // Remove duplicate words
-      wordsArray = removeDuplicateWord(wordsArray);
-      // Remove stop words
-      const featureWordsArray = sw.removeStopwords(wordsArray);
-
+      let bag = tm.bagOfWords(wordsArray, true, true);
+      let featureWordsArray = bag.terms.sort(function(a, b) {
+        if (a.frequency > b.frequency) {
+          return -1;
+        } else if (a.frequency < b.frequency) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      featureWordsArray = featureWordsArray.slice(1, 71).map(obj => {
+        return obj.term;
+      });
       // Each individual model data in object format
       let modelAndSpec = {
        modelName: model.model,
-       specArray: featureWordsArray.slice(0, 70)
+       specArray: featureWordsArray
       };
       ssn.allModelsArray.push(modelAndSpec);
     });
@@ -273,6 +291,7 @@ app.post('/setSimilarityRange', (req, res) => {
       }
     }
   });
+  
   // Sepatate other models from RP model
   ssn.rpAndSpec = ssn.allModelsArray[0];
   ssn.otherModelsAndSpec = ssn.allModelsArray.slice(1);

@@ -27,7 +27,7 @@ wordCloudData.map((model) => {
 
   d3.layout.cloud().size([500, 500])
       .words(wordsArray.map(function(d) {
-        return {text: d, size: 10 + Math.random() * 90};
+        return {text: d, size: 30 + Math.random() * 50};
       }))
       // .rotate(function() { return ~~(Math.random() * 2) * 90; })
       .font("Impact")

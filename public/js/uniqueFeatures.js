@@ -21,10 +21,10 @@ function draw(words) {
 
 d3.layout.cloud().size([600, 600])
     .words(wordCloudData.map(function(d) {
-      return {text: d, size: 10 + Math.random() * 90};
+      return {text: d, size: 30 + Math.random() * 50};
     }))
     // .rotate(function() { return ~~(Math.random() * 2) * 90; })
     .font("Impact")
-    .fontSize(function(d) { return d.size * 0.7; })
+    .fontSize(function(d) { return d.size * 0.6; })
     .on("end", draw)
     .start();
