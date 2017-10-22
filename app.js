@@ -253,7 +253,6 @@ app.post('/wordCloud', (req, res) => {
 
 });
 
-
 // Ask user to set the similarity range (Step 6)
 app.post('/setSimilarityRange', (req, res) => {
   // User input non-feature words for filtering in string format
@@ -291,7 +290,7 @@ app.post('/setSimilarityRange', (req, res) => {
       }
     }
   });
-  
+
   // Sepatate other models from RP model
   ssn.rpAndSpec = ssn.allModelsArray[0];
   ssn.otherModelsAndSpec = ssn.allModelsArray.slice(1);
@@ -361,6 +360,7 @@ app.post('/showUniqueFeature', (req, res) => {
     data: JSON.stringify(uniqueFeatures) // Convert to string for pug file to successfully receive
   });
 });
+
 
 
 

@@ -21,9 +21,25 @@ function draw(words) {
 
 wordCloudData.map((model) => {
   let modelName = model.modelName;
-  let wordsArray = model.specArray;
+  let wordsArray = model.specArray.slice(0, 50);
   var $title = $('<h4></h4>').text(modelName);
   $('#wordCloud').append($title);
+  let modal = "<div id='" + model.modelName + "' class='modal'>";
+  modal += "<div class='modal-content'>";
+  modal += "<h4>Select non-feature words</h4>";
+  modal += "<div class='row'><form class='col s12' id='form" + model.modelName + "'>";
+  modal += "<div class='row'>";
+  for (let i = 0; i < wordsArray.length; i++) {
+    modal += "<p class='col s2'><input type='checkbox' name='nonFeatureWords' id='" + wordsArray[i] + "' />";
+    modal += "<label for='" +wordsArray[i]+ "'>" + wordsArray[i] + "</label></p>";
+  }
+  modal += "</div></form></div></div>";
+  modal += "<div class='modal-footer'>";
+  modal += "<button type='submit' form='form" + model.modelName + "' ";
+  modal += "class='modal-action modal-close waves-effect waves-green btn-flat'>";
+  modal += "Submit</button></div></div>";
+  $modal = $('<div></div>').html(modal);
+  $('body').append($modal);
 
   d3.layout.cloud().size([500, 500])
       .words(wordsArray.map(function(d) {
@@ -42,12 +58,19 @@ $(document).ready(function() {
   let svgArray = $('#wordCloud svg').clone();
   let titleArray = $('#wordCloud h4').clone();
   for (let i = 0; i < wordCloudCount; i++) {
-    let $wordCloudDiv = $('<div></div>').attr('class', 'wordCloud');
+    let $wordCloudDiv = $('<div></div>').addClass('center-align wordCloud').attr('id', 'wordCloud' + i);
     let $title = titleArray[i];
     let $svg = svgArray[i];
+    let $buttonDiv = $('<div></div>').addClass('center-align');
+    let $button = $('<button></button').addClass("waves-effect waves-light btn modal-trigger red lighten-1").text('Remove non-feature words');
+
+    $buttonDiv.append($button);
     $wordCloudDiv.append($title);
     $wordCloudDiv.append($svg);
+    $wordCloudDiv.append($buttonDiv);
     $('#wordCloudFinal').append($wordCloudDiv);
+    $button.attr('data-target', $('#wordCloud' + i + ' h4').text());
   }
   $('#wordCloud').hide();
+  $('.modal').modal();
 });

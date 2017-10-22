@@ -5,7 +5,7 @@ block content
     h2 Word Cloud
     div#wordCloud
     div#wordCloudFinal
-    
+    br
     hr
     h3 Filter non-feature words here
     div.row 
@@ -16,7 +16,8 @@ block content
             label(for='nonFeatureWords') Input Box
         button(class='btn waves-effect waves-light' type='submit') Next
           i(class='material-icons right') send
-        
+
+          
   include scripts.pug
   script.
     var wordCloudData = !{data};
