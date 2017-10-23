@@ -21,21 +21,21 @@ function draw(words) {
 
 wordCloudData.map((model) => {
   let modelName = model.modelName;
-  let wordsArray = model.specArray.slice(0, 50);
+  let wordsArray = model.specArray;
   var $title = $('<h4></h4>').text(modelName);
   $('#wordCloud').append($title);
-  let modal = "<div id='" + model.modelName + "' class='modal'>";
+  let modal = "<div id='modal - " + model.modelName + "' class='modal'>";
   modal += "<div class='modal-content'>";
-  modal += "<h4>Select non-feature words</h4>";
-  modal += "<div class='row'><form class='col s12' id='form" + model.modelName + "'>";
+  modal += "<h4>Select non-feature words for: <span class='teal-text text-lighten-2'>" + model.modelName + "</span></h4>";
+  modal += "<div class='row'><form class='col s12' id='" + model.modelName + "'>";
   modal += "<div class='row'>";
   for (let i = 0; i < wordsArray.length; i++) {
-    modal += "<p class='col s2'><input type='checkbox' name='nonFeatureWords' id='" + wordsArray[i] + "' />";
-    modal += "<label for='" +wordsArray[i]+ "'>" + wordsArray[i] + "</label></p>";
+    modal += "<p class='col s2'><input type='checkbox' name='nonFeatureWords' id='" + wordsArray[i] + i + "' value='" + wordsArray[i] + "' />";
+    modal += "<label for='" +wordsArray[i] + i + "'>" + wordsArray[i] + "</label></p>";
   }
   modal += "</div></form></div></div>";
   modal += "<div class='modal-footer'>";
-  modal += "<button type='submit' form='form" + model.modelName + "' ";
+  modal += "<button type='submit' form='" + model.modelName + "' ";
   modal += "class='modal-action modal-close waves-effect waves-green btn-flat'>";
   modal += "Submit</button></div></div>";
   $modal = $('<div></div>').html(modal);
@@ -69,8 +69,44 @@ $(document).ready(function() {
     $wordCloudDiv.append($svg);
     $wordCloudDiv.append($buttonDiv);
     $('#wordCloudFinal').append($wordCloudDiv);
-    $button.attr('data-target', $('#wordCloud' + i + ' h4').text());
+    $button.attr('data-target', 'modal - ' + $('#wordCloud' + i + ' h4').text());
   }
   $('#wordCloud').hide();
   $('.modal').modal();
+
+  $( "form" ).on( "submit", function( event ) {
+    event.preventDefault();
+    let removedWordsArray = JSON.stringify($( this ).serializeArray());
+    let targetModel = $(this).attr('id');
+    let data = {
+      removedWordsArray: removedWordsArray,
+      targetModel: targetModel
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: 'removeWords',
+      data: data,
+      dataType: 'json'
+    });
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });

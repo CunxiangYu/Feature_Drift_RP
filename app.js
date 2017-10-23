@@ -8,6 +8,7 @@ const sw = require('stopword'); // Node module for removing stopwords
 const removeDuplicateWord = require('./lib/removeDuplicateWord');
 const tm = require('textmining'); // Node module for sorting words based on frequency
 
+
 // Init app
 const app = express();
 
@@ -86,7 +87,8 @@ app.post('/rpCategory', (req, res) => {
 
     let modelAndSpec = {
      modelName: model.model,
-     specArray: featureWordsArray
+     specArray: featureWordsArray.slice(0, 50),
+     lastTwenty: featureWordsArray.slice(50, 70)
     };
     ssn.allModelsArray.push(modelAndSpec);
   });
@@ -108,6 +110,7 @@ app.post('/rpCategory', (req, res) => {
     });
   });
 });
+
 
 // Select category route (Step 2)
 app.post('/selectCategory', (req, res) => {
@@ -241,7 +244,8 @@ app.post('/wordCloud', (req, res) => {
       // Each individual model data in object format
       let modelAndSpec = {
        modelName: model.model,
-       specArray: featureWordsArray
+       specArray: featureWordsArray.slice(0, 50),
+       lastTwenty: featureWordsArray.slice(50, 70)
       };
       ssn.allModelsArray.push(modelAndSpec);
     });
@@ -253,33 +257,50 @@ app.post('/wordCloud', (req, res) => {
 
 });
 
+// Filter Round two
+app.get('/secondRound', (req, res) => {
+  // Find the max length of specArray
+  ssn.allModelsArray.forEach(model => {
+    if (model.specArray.length > ssn.maxLength) {
+      ssn.maxLength = model.specArray.length;
+    }
+  });
+
+  // Decide which model goes to second round if the number of feature words is
+  // less than max length
+  let secondRoundModels = [];
+  ssn.allModelsArray.forEach(model => {
+    if (model.specArray.length < ssn.maxLength) {
+      let obj = {
+        modelName: model.modelName,
+        lastTwenty: model.lastTwenty,
+        numberRequired: ssn.maxLength - model.specArray.length
+      };
+      secondRoundModels.push(obj);
+    }
+  });
+
+  res.render('secondRound', {
+    secondRoundModels: secondRoundModels
+  });
+});
+
 // Ask user to set the similarity range (Step 6)
 app.post('/setSimilarityRange', (req, res) => {
-  // User input non-feature words for filtering in string format
-  let { userInputWords } = req.body;
-  // Convert it to array
-  userInputWords = userInputWords.split(' ').map(word => {
-    return word.toLowerCase();
-  });
-  // Filter userInputWords
-  ssn.allModelsArray.forEach((model) => {
-    model.specArray = model.specArray.filter((word) => {
-        if (userInputWords.indexOf(word.toLowerCase()) === -1) {
-          return true;
-        } else {
-          return false;
-        }
-    });
-  });
-  // Find the max length of specArray
-  ssn.allModelsArray.forEach((model) => {
-    if (model.specArray.length > ssn.maxLength) {
-      ssn.maxLength = model.specArray.length
+  // Check if user select any words
+  if (Object.keys(req.body).length !== 0) {
+    // If user selected any words, add those words to feature array
+    let userInputWords = JSON.parse(JSON.stringify(req.body));
+    for (let key in userInputWords) {
+      if (userInputWords.hasOwnProperty(key)) {
+        ssn.allModelsArray.forEach(model => {
+          if (model.modelName === key) {
+            model.specArray = model.specArray.concat(userInputWords[key]);
+          }
+        });
+      }
     }
-    model.specArray = model.specArray.map((word) => {
-      return word.toLowerCase();
-    });
-  });
+  }
 
   // Fill up to maxLength with 'null'
   ssn.allModelsArray.forEach((model) => {
@@ -301,7 +322,7 @@ app.post('/setSimilarityRange', (req, res) => {
 
 
 // Ask user to choose his interested product (Step 7)
-app.post('/interestedProduct', (req, res) => {
+app.post('/relatedProduct', (req, res) => {
   // Similarity range
   let min = parseFloat(req.body.min);
   let max = parseFloat(req.body.max);
@@ -319,6 +340,7 @@ app.post('/interestedProduct', (req, res) => {
     valueOfSimilarity = parseFloat(valueOfSimilarity.toFixed(1));
     // If in the range, push it to relatedProducts array
     if (valueOfSimilarity >= min && valueOfSimilarity <= max) {
+      model.similarity = valueOfSimilarity;
       ssn.relatedProducts.push(model);
     }
   });
@@ -326,6 +348,7 @@ app.post('/interestedProduct', (req, res) => {
     return model.modelName;
   });
 
+  // Retrieve product data for rendering related product page
   Product.find({models: {$elemMatch: {$in: relatedProductsModelArray}}}, (err, products) => {
     let relatedProductsData = products.map(product => {
       for (let i = 0; i < product.models.length; i++) {
@@ -337,12 +360,20 @@ app.post('/interestedProduct', (req, res) => {
         }
       }
     });
-    res.render('interestedProduct', {
+
+    relatedProductsData.forEach(obj => {
+      ssn.relatedProducts.forEach(pro => {
+        if (pro.modelName === obj.modelName) {
+          obj.similarity = pro.similarity;
+        }
+      })
+    });
+    
+    res.render('relatedProduct', {
       relatedProducts: relatedProductsData
     });
   });
 });
-
 
 // Show Unique Feature (Step 8)
 app.post('/showUniqueFeature', (req, res) => {
@@ -361,19 +392,30 @@ app.post('/showUniqueFeature', (req, res) => {
   });
 });
 
+// Handle ajax request for removing words
+app.post('/removeWords', (req, res) => {
+  let removedWordsArray = JSON.parse(req.body.removedWordsArray);
+  removedWordsArray = removedWordsArray.map(obj => {
+    return obj.value;
+  });
+  let targetModel = req.body.targetModel;
+  ssn.allModelsArray.forEach(model => {
+    if (model.modelName === targetModel) {
+      model.specArray = model.specArray.filter((word) => {
+        if (removedWordsArray.indexOf(word) === -1) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    }
+  });
 
-
-
-
-
-
-
-
-
-
+  res.json({});
+});
 
 // Set port
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 8080);
 const port = app.get('port');
 
 // Start server

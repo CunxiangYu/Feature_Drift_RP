@@ -6,8 +6,11 @@ block content
     ul.collection
       each val in relatedProducts
         li(class="collection-item")
-          h5.teal-text.lighten-2= val.productName
-          p= val.modelName
+          h5.teal-text.darken-3= val.productName
+          p.teal-text.lighten-3 Model: 
+            span.black-text #{val.modelName}
+          p.teal-text.lighten-3 Similarity: 
+            span.black-text #{val.similarity}
     br
     div.row
       form(class='col s12' action='showUniqueFeature' method='POST')

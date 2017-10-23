@@ -1,0 +1,21 @@
+extends header.pug
+
+block content
+  div.container
+    h3 Select Feature Words ( Round 2) 
+    br
+    div.row
+      form(action='setSimilarityRange' method='POST')
+        each obj in secondRoundModels
+          div.input-field.col.s12
+            select(multiple name=obj.modelName id=`${obj.numberRequired}${obj.modelName}`)
+              option(value='' disabled) Choose your option (up to #{obj.numberRequired})
+              each val in obj.lastTwenty
+                option(value=val)= val
+            label=obj.modelName
+        button(class='btn waves-effect waves-light' type='submit') Next
+          i(class='material-icons right') send
+    br
+    br
+  include scripts.pug
+  script(type='text/javascript' src='/js/secondRound.js')
