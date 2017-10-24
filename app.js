@@ -8,7 +8,6 @@ const sw = require('stopword'); // Node module for removing stopwords
 const removeDuplicateWord = require('./lib/removeDuplicateWord');
 const tm = require('textmining'); // Node module for sorting words based on frequency
 
-
 // Init app
 const app = express();
 
@@ -368,7 +367,7 @@ app.post('/relatedProduct', (req, res) => {
         }
       })
     });
-    
+
     res.render('relatedProduct', {
       relatedProducts: relatedProductsData
     });
@@ -415,7 +414,7 @@ app.post('/removeWords', (req, res) => {
 });
 
 // Set port
-app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.PORT || 3000);
 const port = app.get('port');
 
 // Start server

@@ -24,3 +24,13 @@ div#wordCloudFinal {
 div.wordCloud {
   min-width: 50%;
 }
+
+a.homeBtn i {
+  font-size: 25px;
+}
+
+a.homeBtn {
+  position: absolute;
+  bottom: 80px;
+  right: 80px;
+}
